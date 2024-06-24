@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-"""Reads stdin line by line and computes metrics"""
+"""0-stats.py - Parse a log file and print statistics to stdout."""
 import sys
 import signal
 import re
 
-# initialize variables
+# Initialize variables
 total_size = 0
 status_code_counts = {
     200: 0,
@@ -14,17 +14,16 @@ status_code_counts = {
     403: 0,
     404: 0,
     405: 0,
-    500: 0
-}
+    500: 0}
 line_counter = 0
 
-# compile regex pattern
+# Compile a regular expression pattern for matching the log format
 log_pattern = re.compile(
     r'^(\S+) - \[(.*?)\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$')
 
 
 def print_statistics():
-    """Print the collected statistics"""
+    """Print the collected statistics."""
     print(f"File size: {total_size}")
     for code in sorted(status_code_counts.keys()):
         if status_code_counts[code] > 0:
@@ -32,7 +31,7 @@ def print_statistics():
 
 
 def process_line(line):
-    """Process a single line of input"""
+    """Process a single line of input."""
     global total_size, status_code_counts, line_counter
 
     match = log_pattern.match(line)
@@ -60,18 +59,24 @@ def signal_handler(sig, frame):
 # Register the signal handler for keyboard interruption
 signal.signal(signal.SIGINT, signal_handler)
 
-try:
-    while True:
-        line = sys.stdin.readline()
-        if not line:
-            break
-        process_line(line.strip())
-        if line_counter % 10 == 0:
-            print_statistics()
+
+def main():
+    global line_counter
+    try:
+        while True:
+            line = sys.stdin.readline()
+            if not line:
+                break
+            process_line(line.strip())
+            if line_counter % 10 == 0 and line_counter != 0:
+                print_statistics()
         # Print statistics at the end of the input or if no lines were
         # processed
-    if line_counter % 10 != 0:
         print_statistics()
-except KeyboardInterrupt:
-    print_statistics()
-    sys.exit(0)
+    except KeyboardInterrupt:
+        print_statistics()
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
