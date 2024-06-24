@@ -68,6 +68,7 @@ try:
             print_statistics()
     if line_counter % 10 != 0:
         print_statistics()
+    print_statistics()
 except KeyboardInterrupt:
     print_statistics()
     sys.exit(0)
