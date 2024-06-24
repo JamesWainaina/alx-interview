@@ -21,7 +21,7 @@ line_counter = 0
 
 def print_statistics():
     """print the collected statistics"""
-    print(f"Total file size: {total_size}")
+    print(f"File size: {total_size}")
     for code in sorted(status_code_count.keys()):
         if status_code_count[code] > 0:
             print(f"{code}: {status_code_count[code]}")
