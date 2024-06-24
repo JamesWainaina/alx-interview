@@ -4,34 +4,23 @@ from stdin and computes metrics"""
 import sys
 import signal
 
+# Initialize variables
 total_size = 0
-status_code_count = {
-    200: 0,
-    301: 0,
-    400: 0,
-    401: 0,
-    403: 0,
-    404: 0,
-    405: 0,
-    500: 0
-}
-
+status_code_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 line_counter = 0
 
-
 def print_statistics():
-    """print the collected statistics"""
+    """Print the collected statistics."""
     print(f"File size: {total_size}")
-    for code in sorted(status_code_count.keys()):
-        if status_code_count[code] > 0:
-            print(f"{code}: {status_code_count[code]}")
-
+    for code in sorted(status_code_counts.keys()):
+        if status_code_counts[code] > 0:
+            print(f"{code}: {status_code_counts[code]}")
 
 def process_line(line):
-    """process a single line of input"""
-    global total_size, status_code_count, line_counter
-    # Expected format: <IP Address> - [<date>] "GET /projects/260 HTTP/1.1"
-    # <status code> <file size>
+    """Process a single line of input."""
+    global total_size, status_code_counts, line_counter
+
+    # Expected format: <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
     parts = line.split()
     if len(parts) < 9:
         return
@@ -42,18 +31,17 @@ def process_line(line):
     except (ValueError, IndexError):
         return
 
-    if status_code in status_code_count:
-        status_code_count[status_code] += 1
+    if status_code in status_code_counts:
+        status_code_counts[status_code] += 1
     total_size += file_size
     line_counter += 1
 
-
 def signal_handler(sig, frame):
-    """Handle keyboard interuption (CTRL + C)"""
+    """Handle keyboard interruption (CTRL + C)."""
     print_statistics()
     sys.exit(0)
 
-
+# Register the signal handler for keyboard interruption
 signal.signal(signal.SIGINT, signal_handler)
 
 try:
@@ -62,12 +50,9 @@ try:
         if not line:
             break
         process_line(line.strip())
-        """this code ensures that statistics are printed
-        every 10 lines"""
         if line_counter % 10 == 0:
             print_statistics()
-    if line_counter % 10 != 0:
-        print_statistics()
+    # Print statistics at the end of the input or if no lines were processed
     print_statistics()
 except KeyboardInterrupt:
     print_statistics()
