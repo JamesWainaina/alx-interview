@@ -66,6 +66,8 @@ try:
         every 10 lines"""
         if line_counter % 10 == 0:
             print_statistics()
+    if line_counter % 10 != 0:
+        print_statistics()
 except KeyboardInterrupt:
     print_statistics()
     sys.exit(0)
