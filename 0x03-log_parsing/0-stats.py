@@ -72,7 +72,10 @@ def main():
                 print_statistics()
         # Print statistics at the end of the input or if no lines were
         # processed
-        print_statistics()
+        if line_counter == 0:
+            print("File size: 0")
+        else:
+            print_statistics()
     except KeyboardInterrupt:
         print_statistics()
         sys.exit(0)
