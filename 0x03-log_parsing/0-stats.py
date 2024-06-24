@@ -3,7 +3,7 @@ import sys
 import signal
 import re
 
-#initialize variables
+# initialize variables
 total_size = 0
 status_code_counts = {
     200: 0,
@@ -17,8 +17,10 @@ status_code_counts = {
 }
 line_counter = 0
 
-#compile regex pattern
-log_pattern = re.compile(r'^(\S+) - \[(.*?)\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$')
+# compile regex pattern
+log_pattern = re.compile(
+    r'^(\S+) - \[(.*?)\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$')
+
 
 def print_statistics():
     """Print the collected statistics"""
@@ -27,6 +29,7 @@ def print_statistics():
         if status_code_counts[code] > 0:
             print(f"{code}: {status_code_counts[code]}")
 
+
 def process_line(line):
     """Process a single line of input"""
     global total_size, status_code_counts, line_counter
@@ -34,22 +37,24 @@ def process_line(line):
     match = log_pattern.match(line)
     if not match:
         return
-    
+
     try:
         status_code = int(match.group(3))
         file_size = int(match.group(4))
     except (ValueError, IndexError):
         return
-    
+
     if status_code in status_code_counts:
         status_code_counts[status_code] += 1
     total_size += file_size
     line_counter += 1
 
+
 def signal_handler(sig, frame):
     """Handle keyboard interruption (CTRL + C)."""
     print_statistics()
     sys.exit(0)
+
 
 # Register the signal handler for keyboard interruption
 signal.signal(signal.SIGINT, signal_handler)
@@ -62,7 +67,8 @@ try:
         process_line(line.strip())
         if line_counter % 10 == 0:
             print_statistics()
-        # Print statistics at the end of the input or if no lines were processed
+        # Print statistics at the end of the input or if no lines were
+        # processed
     if line_counter % 10 != 0:
         print_statistics()
 except KeyboardInterrupt:
