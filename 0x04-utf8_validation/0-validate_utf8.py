@@ -1,14 +1,21 @@
 #!/usr/bin/python3
-
+# -*- coding: utf-8 -*-
 """
-Created at Mon July 22 2024
+Created on Mon July  24 10:11 2024
+
 @Author: James Gatheru
 """
 
 
 def validUTF8(data):
     """
-    Determines if a given data ste is valid UTF-8
+    Determines if a given data set is valid UTF-8.
+
+    Args:
+        data (list): A list of integers.
+
+    Returns:
+        bool: True if the data set is valid UTF-8, False otherwise.
     """
     num_of_bytes = 0
 
@@ -21,7 +28,7 @@ def validUTF8(data):
                 num_of_bytes = 1
             elif 224 <= byte < 240:
                 num_of_bytes = 2
-            elif 240 < byte < 248:
+            elif 240 <= byte < 248:
                 num_of_bytes = 3
             else:
                 return False
